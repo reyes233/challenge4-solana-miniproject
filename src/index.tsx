@@ -82,6 +82,10 @@ function App() {
     undefined
   );
 
+  const [generatedKeyPair, setKeyPair] = useState<Keypair | undefined>(
+    undefined
+  );
+
   // this is the function that runs whenever the component updates (e.g. render, refresh)
   useEffect(() => {
 	  const provider = getProvider();
@@ -100,6 +104,9 @@ function App() {
       {
         const newPair = Keypair.generate();
         setNewWalletKey(newPair.publicKey);
+        setKeyPair(newPair);
+        await airdropSoltoNewWallet(newPair);
+        await new Promise(f => setTimeout(f, 10000));
         await airdropSoltoNewWallet(newPair);
         await checkBalance(newPair);
       }
@@ -190,7 +197,7 @@ function App() {
           connection,
           transaction,
           //@ts-ignore
-          [generatedWalletKey]
+          [generatedKeyPair]
       );
       console.log("Successfully Sent!");
       console.log('Signature is ', signature.toString());
